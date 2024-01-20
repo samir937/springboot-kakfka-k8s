@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper
+  labels:
+    app: zookeeper
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper
+      tier: backend
+  template:
+    metadata:
+      name: zookeeper
+      labels:
+        app: zookeeper
+        tier: backend
+    spec:
+      containers:
+        - name: zookeeper
+          image: confluentinc/cp-zookeeper:7.3.2
+          ports:
+            - containerPort: 2181
+          env:
+            - name: ZOOKEEPER_CLIENT_PORT
+              value: "2181"
+            - name: ZOOKEEPER_SERVER_ID
+              value: "1"
+            - name: ZOOKEEPER_SERVERS
+              value: "zookeeper:2888:3888"

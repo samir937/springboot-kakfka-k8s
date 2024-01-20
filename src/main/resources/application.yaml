@@ -3,6 +3,18 @@ spring:
     name: spring-boot-kafka
   main:
     banner-mode: off
+  cloud:
+    kubernetes:
+      enabled: true
+      reload:
+        enabled: true
+        mode: event
+        monitoring-config-maps: true
+      config:
+        sources:
+          name: ${spring.application.name}
+      discovery:
+        all-namespaces: true
 
 spring-boot-kafka:
   kafka:
