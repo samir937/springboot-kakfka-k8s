@@ -4,9 +4,8 @@ metadata:
   name: springboot-kafka
 spec:
   selector:
-  port:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-  type: NodePort
+    app: springboot-kafka
+  ports:
+    - port: 8082
+  type: ClusterIP
 

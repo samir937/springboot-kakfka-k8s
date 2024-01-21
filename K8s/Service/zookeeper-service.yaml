@@ -6,9 +6,9 @@ metadata:
   labels:
     app: zookeeper-service
 spec:
-  type: NodePort
-  port:
-    - protocol: TCP
+  type: ClusterIP
+  ports:
+    - name: zookeeper-port
       port: 2181
   selector:
     app: zookeeper

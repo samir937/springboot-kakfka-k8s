@@ -1,13 +1,71 @@
+#Service file
 apiVersion: v1
 kind: Service
 metadata:
   name: springboot-kafka
 spec:
   selector:
-  port:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-  type: NodePort
+    app: springboot-kafka
+  ports:
+    - port: 8082
+  type: ClusterIP
 
+---
 
+#Deployment File
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-kafka
+  labels:
+    app: springboot-kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-kafka
+  template:
+    metadata:
+      name: springboot-kafka
+      labels:
+        app: springboot-kafka
+    spec:
+      containers:
+        - name: springboot-kafka
+          image: spring-boot-kafka:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8082
+              name: main-port
+          volumeMounts:
+            - mountPath: /app/application.yaml
+              name: springboot-kafka-application-yaml
+              subPath: application.yaml
+          livenessProbe:
+            httpGet:
+              port: 8082
+              path: /actuator/health/liveness
+              scheme: HTTP
+            successThreshold: 1
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              port: 8082
+              path: /actuator/health/readiness
+              scheme: HTTP
+            initialDelaySeconds: 150
+            periodSeconds: 30
+            failureThreshold: 3
+            successThreshold: 2
+            timeoutSeconds: 30
+      volumes:
+        - name: springboot-kafka-application-yaml
+          configMap:
+            items:
+              - key: application.yaml
+                path: application.yaml
+            name: springboot-kafka
+      restartPolicy: Always

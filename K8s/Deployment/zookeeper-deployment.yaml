@@ -4,23 +4,21 @@ metadata:
   name: zookeeper
   labels:
     app: zookeeper
-    tier: backend
+  namespace: kafka
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: zookeeper
-      tier: backend
   template:
     metadata:
-      name: zookeeper
       labels:
         app: zookeeper
-        tier: backend
     spec:
       containers:
         - name: zookeeper
           image: confluentinc/cp-zookeeper:7.3.2
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 2181
           env:
